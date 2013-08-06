@@ -1,56 +1,62 @@
 <html>
- <head>
-  <title>calc24</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
- </head>
-  <body>
+<head>
+<title>calc24</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
 	<div>
-		题目 : 使用1,3,4,6数字, 和+,-,*,/运算符, 以及括号, 是计算结果为24.
+		题目 : 使用1,3,4,6数字, 和+,-,*,/运算符, 以及括号, 是计算结果为24.<br> 
 		下面是程序, 可以修改其它值看看结果.
 	</div>
+	<hr>
 	<div>
-		number:<input id="nums" value="1,3,4,6">(try 1,2,3,4,6)
-		operator: <input id="ops" value="+,-,*,/">
-		result: <input id="result_num" value="24">(try 12)
-		bracket: <input type="checkbox" checked="checked" id="bracket">
+		number:
+		<input id="nums" value="1,3,4,6">
+		(try 1,2,3,4,6) operator:
+		<input id="ops" value="+,-,*,/">
+		result:
+		<input id="result_num" value="24">
+		(try 12) bracket:
+		<input type="checkbox" checked="checked" id="bracket">
 		<input type="button" value="  run  " onclick="calc();">
 	</div>
-	
+
 	<br>
-	
+
 	<div id="result">click run button!</div>
-	
+
 	<script>
-	
-		function getRows(nums, index, result){
-			
-			if(0 == index) {return result;}
-			
+		function getRows(nums, index, result) {
+
+			if (0 == index) {
+				return result;
+			}
+
 			var newResult = [];
-			
+
 			if (!result) {
 				result = [];
-				
-				for(var i=0; i<nums.length; i++) {
-				
+
+				for ( var i = 0; i < nums.length; i++) {
+
 					newResult.push(nums[i]);
-					
+
 				}
-			} 
-			
-			for(var i=0; i<nums.length; i++) {
-				for(var j=0; j<result.length; j++) {
+			}
+
+			for ( var i = 0; i < nums.length; i++) {
+				for ( var j = 0; j < result.length; j++) {
 					newResult.push(result[j] + "" + nums[i]);
 				}
 			}
-			
-			return getRows(nums, index-1, newResult);
+
+			return getRows(nums, index - 1, newResult);
 		}
-	
+
 		function isDiff(nums) {
-			if(nums && nums['length']) {
-				for (var i=0; i<nums.length-1; i++) {
-					for(var j=i+1; j<nums.length; j++) {
+			if (nums && nums['length']) {
+				for ( var i = 0; i < nums.length - 1; i++) {
+					for ( var j = i + 1; j < nums.length; j++) {
 						if (nums[i] == nums[j]) {
 							return false;
 						}
@@ -59,47 +65,47 @@
 			}
 			return true;
 		}
-		
+
 		function findResult(nums, ops, RESULT, flag) {
-						
+
 			var result = [];
-		
+
 			var expNums = getRows(nums, nums.length);
-			
-			var expOps = getRows(ops, nums.length-1);
-			
+
+			var expOps = getRows(ops, nums.length - 1);
+
 			var expsText = "";
-			for(var i=0; i<expNums.length; i++) {
+			for ( var i = 0; i < expNums.length; i++) {
 				var numPart = expNums[i].split("");
-				if (isDiff(numPart)) { 
-					
-					for(var j=0; j<expOps.length; j++) {
+				if (isDiff(numPart)) {
+
+					for ( var j = 0; j < expOps.length; j++) {
 						var opPart = expOps[j].split("");
 						var e = numPart[0];
-						for(var k=0; k<opPart.length; k++) {
-							e += opPart[k] + numPart[k+1];
+						for ( var k = 0; k < opPart.length; k++) {
+							e += opPart[k] + numPart[k + 1];
 						}
-						
+
 						var num = eval(e)
 						if (num == RESULT) {
 							result.push(e + " = " + num + "<br>");
 						}
-						
-						if(flag) {
-						
+
+						if (flag) {
+
 							var es = e.split("");
-							
+
 							var ee = "";
-							for(var k1=0; k1<es.length/2-1; k1++) {						
-								for(var k2=k1+1; k2<es.length/2; k2++) {
+							for ( var k1 = 0; k1 < es.length / 2 - 1; k1++) {
+								for ( var k2 = k1 + 1; k2 < es.length / 2; k2++) {
 									ee = "";
-									for(var k = 0; k<es.length; k++) {
-										if(k==k1*2) {
+									for ( var k = 0; k < es.length; k++) {
+										if (k == k1 * 2) {
 											ee += "(";
 										}
 										ee += es[k];
-										
-										if(k==k2*2) {
+
+										if (k == k2 * 2) {
 											ee += ")";
 										}
 									}
@@ -108,7 +114,8 @@
 										if (num == RESULT) {
 											result.push(ee + " = " + num + "<br>");
 										}
-									}catch(e) {}
+									} catch (e) {
+									}
 								}
 							}
 						}
@@ -117,21 +124,19 @@
 			}
 			return result;
 		}
-		
-		
+
 		function calc() {
-		
+
 			var resultDom = document.getElementById("result");
-		
-			
+
 			var nums = document.getElementById("nums").value.split(",");//[1,3, 4, 6];
 			var ops = document.getElementById("ops").value.split(",");//['+','-','*', '/'];
 			var result_num = document.getElementById("result_num").value;//24;
 			var bracket = document.getElementById("bracket").checked;//24;
-			
-			var resultText = findResult(nums, ops, result_num, bracket);	
-			
-			resultDom.innerHTML = "count : " + resultText['length'] +"<br><br>" + resultText.join("");
+
+			var resultText = findResult(nums, ops, result_num, bracket);
+
+			resultDom.innerHTML = "count : " + resultText['length'] + "<br><br>" + resultText.join("");
 		}
 	</script>
 </body>
